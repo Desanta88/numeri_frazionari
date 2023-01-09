@@ -11,7 +11,7 @@ namespace Frazioni
         static void Main(string[] args)
         {
             Fractions f = new Fractions(2, 3);
-            int i = 0;
+            
             
         }
     }

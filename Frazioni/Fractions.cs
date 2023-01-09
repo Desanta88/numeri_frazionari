@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Frazioni
 {
     public class Fractions
@@ -51,27 +52,73 @@ namespace Frazioni
         {
             return Numeratore + "/" + Denominatore;
         }
-        /*private int MCD(int n,int d)
+        private int[] ScompNum(int n)
         {
-            int j = 0, h = 0;
+            int j = 0,i=2;
             int[] num=new int[100];
-            int[] den = new int[100];
-            for (int i = 2; i < n; i++)
+            while (i < n)
             {
-                int c = 0;
-                c = i;
                 if (n % i == 0)
                 {
                     n = n / i;
                     num[j] = i;
                     j++;
-                    c = i;
+                    i = 2;
                 }
-           
-                    
-                    
+                else
+                {
+                    i++;
+                }
+
             }
-        }*/
+            int[] nume = new int[j];
+            nume = num;
+            return nume;
+        }
+        private int[] ScompDen(int d)
+        {
+            int h = 0, i = 2;
+            int[] den = new int[100];
+            while (i < d)
+            {
+                if (d % i == 0)
+                {
+                    d = d / i;
+                    den[h] = i;
+                    h++;
+                    i = 2;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            int[] deno = new int[h];
+            deno = den;
+            return deno;
+        }
+        private int[] Scomposizione(int[] n)
+        {
+            int count=0,m=2,scomp=0,a=0;
+            int[] arr = new int[100];
+            Array.Sort(n);
+            for(int i = 0; i < n.Length - 1; i++)
+            {
+                if (n[i] == m)
+                    count++;
+                else
+                {
+                    scomp=scomp*Convert.ToInt32(Math.Pow(Convert.ToDouble(n[i]), Convert.ToDouble(count)));
+                    arr[a] = scomp;
+                    a++;
+                    count = 0;
+                    m++;
+                }
+            }
+            Array.Resize(ref arr, a);
+            return arr;
+        }
+        //private int MCD(int )
         
     }
 }
