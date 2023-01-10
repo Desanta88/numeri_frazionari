@@ -12,7 +12,7 @@ namespace Frazioni
         private int _numeratore;
         private int _denominatore;
 
-        public Fractions(int n,int d)
+        public Fractions(int n, int d)
         {
             _numeratore = n;
             _denominatore = d;
@@ -27,11 +27,17 @@ namespace Frazioni
             set { _denominatore = value; }
             get { return _denominatore; }
         }
-        /*public int Semplifica(Fractions f)
+        public void Semplifica()
         {
-            
-
-        }*/
+            int[] sNum;
+            int[] sDen;
+            int massimoComuneDivisore = 0;
+            sNum = Scomposizione(Numeratore);
+            sDen = Scomposizione(Denominatore);
+            massimoComuneDivisore = MCD(sNum, sDen);
+            Numeratore = Numeratore / massimoComuneDivisore;
+            Denominatore = Denominatore / massimoComuneDivisore;
+        }
         public void Somma(Fractions f, Fractions f2)
         {
 
@@ -52,73 +58,77 @@ namespace Frazioni
         {
             return Numeratore + "/" + Denominatore;
         }
-        private int[] ScompNum(int n)
+        private int[] Scomposizione(int n)
         {
-            int j = 0,i=2;
-            int[] num=new int[100];
-            while (i < n)
+            int j = 0, i = 2, temp = 1, count = 0, g = 0, stessiNum = 1;
+            int[] num = new int[100];
+            int[] num2 = new int[100];
+            while (i <= n)
             {
                 if (n % i == 0)
                 {
                     n = n / i;
-                    num[j] = i;
-                    j++;
-                    i = 2;
-                }
-                else
-                {
-                    i++;
-                }
-
-            }
-            int[] nume = new int[j];
-            nume = num;
-            return nume;
-        }
-        private int[] ScompDen(int d)
-        {
-            int h = 0, i = 2;
-            int[] den = new int[100];
-            while (i < d)
-            {
-                if (d % i == 0)
-                {
-                    d = d / i;
-                    den[h] = i;
-                    h++;
-                    i = 2;
-                }
-                else
-                {
-                    i++;
-                }
-            }
-            int[] deno = new int[h];
-            deno = den;
-            return deno;
-        }
-        private int[] Scomposizione(int[] n)
-        {
-            int count=0,m=2,scomp=0,a=0;
-            int[] arr = new int[100];
-            Array.Sort(n);
-            for(int i = 0; i < n.Length - 1; i++)
-            {
-                if (n[i] == m)
+                    temp = i;
+                    if (count != 0 && temp % i == 0)
+                    {
+                        temp = temp * Convert.ToInt32(Math.Pow(Convert.ToDouble(i), Convert.ToDouble(stessiNum)));
+                        stessiNum++;
+                    }
                     count++;
+                }
                 else
                 {
-                    scomp=scomp*Convert.ToInt32(Math.Pow(Convert.ToDouble(n[i]), Convert.ToDouble(count)));
-                    arr[a] = scomp;
-                    a++;
+                    num2[j] = temp;
+                    j++;
+                    i++;
                     count = 0;
-                    m++;
+                    temp = 1;
+                    stessiNum = 1;
                 }
             }
-            Array.Resize(ref arr, a);
-            return arr;
+            num2[j] = temp;
+            Array.Resize(ref num2, j + 1);
+            count = 0;
+            for (int f = 0; f < num2.Length; f++)
+            {
+                if (num2[f] != 1)
+                {
+                    num[g] = num2[f];
+                    count++;
+                    g++;
+                }
+            }
+            Array.Resize(ref num, count);
+            return num;
         }
-        //private int MCD(int )
-        
+        private int MCD(int[] n, int[] d)
+        {
+            //mcd=variabile che conterrà l'mcd,a e b sono variabili che conterranno i resti delle divisione tra i 2 numeri in ogni array
+            int mcd = 1, a = 0, b = 0;
+            //comparo ogni elemento del primo array con tutti gli elementi del secondo attraverso 2 cicli
+            for (int x = 0; x < n.Length; x++)
+            {
+                for (int y = 0; y < d.Length; y++)
+                {
+                    a = n[x] % d[y];
+                    b = d[y] % n[x];
+                    //se entrambi i resti sono 0,allora significa che entrambi i numeri sono uguali e quindi lo aggingo all'mcd
+                    if (a == 0 && b == 0)
+                    {
+                        mcd = mcd * n[x];
+                    }
+                    //se solo un resto è uguale a 0,allora vuol dire che l'altro resto sarà uguale al numero più piccolo e quindi lo aggiungo all'mcd
+                    else if (a == 0 || b == 0)
+                    {
+                        if (a == 0)
+                            mcd = mcd * b;
+                        else
+                            mcd = mcd * a;
+                    }
+                }
+            }
+            return mcd;
+        }
+
     }
 }
