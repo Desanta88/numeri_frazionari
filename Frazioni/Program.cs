@@ -10,9 +10,13 @@ namespace Frazioni
     {
         static void Main(string[] args)
         {
-            Fractions f = new Fractions(24,60);
-            f.Semplifica();
-            Console.WriteLine(f.getFrazione());
+            Fractions f = new Fractions(3,2);
+            Fractions f2 = new Fractions(3,2);
+            Fractions ris = new Fractions();
+            ris=f.Dividi(f2);
+            Console.WriteLine(ris.getFrazione());
+            //f.Semplifica();
+            //Console.WriteLine(f.getFrazione());
             
             
         }
