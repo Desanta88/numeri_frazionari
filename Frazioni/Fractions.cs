@@ -37,19 +37,33 @@ namespace Frazioni
             int[] sNum;
             int[] sDen;
             int massimoComuneDivisore = 0;
-            sNum = Scomposizione(Numeratore);
-            sDen = Scomposizione(Denominatore);
-            massimoComuneDivisore = MCD(sNum, sDen);
-            Numeratore = Numeratore / massimoComuneDivisore;
-            Denominatore = Denominatore / massimoComuneDivisore;
+            if (this.Numeratore == this.Denominatore)
+            {
+                this.Numeratore = 1;
+                this.Denominatore = 1;
+            }
+            else
+            {
+                sNum = Scomposizione(Numeratore);
+                sDen = Scomposizione(Denominatore);
+                massimoComuneDivisore = MCD(sNum, sDen);
+                Numeratore = Numeratore / massimoComuneDivisore;
+                Denominatore = Denominatore / massimoComuneDivisore;
+            }
         }
-        public void Somma(Fractions f)
+        public Fractions Somma(Fractions f)
         {
-            int[] sNum;
-            int[] sNum2;
-            int minimoComuneMultiplo=0;
-            sNum = Scomposizione(this.Denominatore);
-            sNum2 = Scomposizione(f.Denominatore);
+            Fractions risultato = new Fractions();
+            int minimoComuneMultiplo = 0;
+            if (this.Denominatore == f.Denominatore)
+            {
+                risultato.Numeratore = this.Numeratore + f.Numeratore;
+                risultato.Denominatore = f.Denominatore;
+            }
+            minimoComuneMultiplo = this.Denominatore*f.Denominatore;
+            risultato.Numeratore = ((minimoComuneMultiplo / this.Denominatore) * this.Numeratore) + ((minimoComuneMultiplo / f.Denominatore) * f.Numeratore);
+            risultato.Denominatore = minimoComuneMultiplo;
+            return risultato;
         }
         public Fractions Moltiplica(Fractions f)
         {
@@ -60,15 +74,25 @@ namespace Frazioni
             fTemp = new Fractions(risNum, risDen);
             return fTemp;
         }
-        public void Sottrai(Fractions f)
+        public Fractions Sottrai(Fractions f)
         {
-
+            Fractions risultato = new Fractions();
+            int minimoComuneMultiplo = 0;
+            if (this.Denominatore == f.Denominatore)
+            {
+                risultato.Numeratore = this.Numeratore - f.Numeratore;
+                risultato.Denominatore = f.Denominatore;
+            }
+            minimoComuneMultiplo = this.Denominatore * f.Denominatore;
+            risultato.Numeratore = ((minimoComuneMultiplo / this.Denominatore) * this.Numeratore) - ((minimoComuneMultiplo / f.Denominatore) * f.Numeratore);
+            risultato.Denominatore = minimoComuneMultiplo;
+            return risultato;
         }
         public Fractions Dividi(Fractions f)
         {
             Fractions ris=new Fractions();
             f.Inversione();
-            ris=f.Moltiplica(f);
+            ris=this.Moltiplica(f);
             return ris;
 
         }
@@ -86,8 +110,8 @@ namespace Frazioni
         private int[] Scomposizione(int n)
         {
             int j = 0, i = 2, temp = 1, count = 0, g = 0, stessiNum = 1;
-            int[] num = new int[100];
-            int[] num2 = new int[100];
+            int[] num = new int[999];
+            int[] num2 = new int[999];
             while (i <= n)
             {
                 if (n % i == 0)
@@ -124,6 +148,7 @@ namespace Frazioni
                 }
             }
             Array.Resize(ref num, count);
+            Array.Sort(num);
             return num;
         }
         private int MCD(int[] n, int[] d)
@@ -154,37 +179,5 @@ namespace Frazioni
             }
             return mcd;
         }
-        /*private int mcm(int[] n, int[] d)
-        {
-            int mcd = 1, a = 0, b = 0,count=0;
-            //comparo ogni elemento del primo array con tutti gli elementi del secondo attraverso 2 cicli
-            for (int x = 0; x < n.Length; x++)
-            {
-                for (int y = 0; y < d.Length; y++)
-                {
-                    //num={2,3,5} num2={5,9} num={2,3,5}
-                    a = n[x] % d[y];
-                    b = d[y] % n[x];
-                    //se entrambi i resti sono 0,allora significa che entrambi i numeri sono uguali e quindi lo aggingo all'mcm
-                    if (a == 0 && b == 0)
-                    {
-                        mcd = mcd * n[x];
-                    }
-                    //se solo un resto è uguale a 0,allora vuol dire che l'altro resto sarà uguale al numero più piccolo e quindi lo aggiungo all'mcd
-                    else if (a == 0 || b == 0)
-                    {
-                        if (a > 0)
-                            mcd = mcd * d[y];
-                        else
-                            mcd = mcd * n[x];
-                    }
-                    else if (a != 0 && b != 0)
-                        count++;
-                    if (count == d.Length)
-                        mcd = mcd * n[x];
-                }
-            }
-        }*/
-
     }
 }
