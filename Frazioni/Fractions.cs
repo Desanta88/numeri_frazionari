@@ -25,24 +25,28 @@ namespace Frazioni
         public int Numeratore
         {
             get { return _numeratore; }
-            set { _numeratore = value; }
+            set { _numeratore = value;}
         }
         public int Denominatore
         {
             set { _denominatore = value; }
             get { return _denominatore; }
         }
+        //semplificazione di una frazione,se non è possibile semplificarla allora non cambierà
         public void Semplifica()
         {
             int[] sNum;
             int[] sDen;
             int massimoComuneDivisore = 0;
+
+            if (this.Denominatore == 0)
+                throw new Exception("Il denominatore non può essere 0");
             if (this.Numeratore == this.Denominatore)
             {
                 this.Numeratore = 1;
                 this.Denominatore = 1;
             }
-            else
+            else if(this.Numeratore>0)
             {
                 sNum = Scomposizione(Numeratore);
                 sDen = Scomposizione(Denominatore);
@@ -50,56 +54,85 @@ namespace Frazioni
                 Numeratore = Numeratore / massimoComuneDivisore;
                 Denominatore = Denominatore / massimoComuneDivisore;
             }
+            else if (this.Numeratore < 0)
+            {
+                this.Numeratore = this.Numeratore * -1;
+                sNum = Scomposizione(Numeratore);
+                sDen = Scomposizione(Denominatore);
+                massimoComuneDivisore = MCD(sNum, sDen);
+                Numeratore = Numeratore / massimoComuneDivisore;
+                Numeratore = Numeratore * -1;
+                Denominatore = Denominatore / massimoComuneDivisore;
+            }
         }
+        //somma tra due frazioni
         public Fractions Somma(Fractions f)
         {
             Fractions risultato = new Fractions();
             int minimoComuneMultiplo = 0;
+
+            if(this.Denominatore==0 || f.Denominatore==0)
+                throw new Exception("Il denominatore non può essere 0");
             if (this.Denominatore == f.Denominatore)
             {
                 risultato.Numeratore = this.Numeratore + f.Numeratore;
                 risultato.Denominatore = f.Denominatore;
+                return risultato;
             }
             minimoComuneMultiplo = this.Denominatore*f.Denominatore;
             risultato.Numeratore = ((minimoComuneMultiplo / this.Denominatore) * this.Numeratore) + ((minimoComuneMultiplo / f.Denominatore) * f.Numeratore);
             risultato.Denominatore = minimoComuneMultiplo;
             return risultato;
         }
+        //moltiplicazione tra due frazioni
         public Fractions Moltiplica(Fractions f)
         {
             int risNum = 0,risDen=0;
             Fractions fTemp;
+
+            if (this.Denominatore == 0 || f.Denominatore == 0)
+                throw new Exception("Il denominatore non può essere 0");
             risNum = this.Numeratore * f.Numeratore;
             risDen = this.Denominatore * f.Denominatore;
             fTemp = new Fractions(risNum, risDen);
             return fTemp;
         }
+        //sottrazione tra due frazioni
         public Fractions Sottrai(Fractions f)
         {
             Fractions risultato = new Fractions();
             int minimoComuneMultiplo = 0;
+
+            if (this.Denominatore == 0 || f.Denominatore == 0)
+                throw new Exception("Il denominatore non può essere 0");
             if (this.Denominatore == f.Denominatore)
             {
                 risultato.Numeratore = this.Numeratore - f.Numeratore;
                 risultato.Denominatore = f.Denominatore;
+                return risultato;
             }
             minimoComuneMultiplo = this.Denominatore * f.Denominatore;
             risultato.Numeratore = ((minimoComuneMultiplo / this.Denominatore) * this.Numeratore) - ((minimoComuneMultiplo / f.Denominatore) * f.Numeratore);
             risultato.Denominatore = minimoComuneMultiplo;
             return risultato;
         }
+        //divisione tra due frazioni
         public Fractions Dividi(Fractions f)
         {
             Fractions ris=new Fractions();
+
+            if (this.Denominatore == 0 || f.Denominatore == 0)
+                throw new Exception("Il denominatore non può essere 0");
             f.Inversione();
             ris=this.Moltiplica(f);
             return ris;
-
         }
-        public string getFrazione()
+        //restituisce la frazione
+        public override string ToString()
         {
             return Numeratore + "/" + Denominatore;
         }
+        //scambia di posto il numeratore con il denominatore
         private void Inversione()
         {
             int n = 0;
@@ -107,11 +140,12 @@ namespace Frazioni
             this.Numeratore = this.Denominatore;
             this.Denominatore = n;
         }
+        //scompone un numero in fattori primi,mettendoli poi in un array
         private int[] Scomposizione(int n)
         {
             int j = 0, i = 2, temp = 1, count = 0, g = 0, stessiNum = 1;
-            int[] num = new int[999];
-            int[] num2 = new int[999];
+            int[] num = new int[9999999];
+            int[] num2 = new int[9999999];
             while (i <= n)
             {
                 if (n % i == 0)
@@ -151,6 +185,7 @@ namespace Frazioni
             Array.Sort(num);
             return num;
         }
+        //esegue l'mcd tra due array contenenti la scomposizione in fattori primi di due numeri
         private int MCD(int[] n, int[] d)
         {
             //mcd=variabile che conterrà l'mcd,a e b sono variabili che conterranno i resti delle divisione tra i 2 numeri in ogni array
@@ -179,5 +214,24 @@ namespace Frazioni
             }
             return mcd;
         }
+        // controlla se l'oggetto creato contiene una frazione oppure no
+        public static bool Esiste(Fractions f)
+        {
+            if (f != null)
+                return true;
+            return false;
+        }
+        //copia una frazione in un altro oggetto
+        public static Fractions Clone(Fractions f)
+        {
+            Fractions fTemp;
+            if (Fractions.Esiste(f))
+            {
+                fTemp = new Fractions(f.Numeratore, f.Denominatore);
+                return fTemp;
+            }
+            return null;
+        }
     }
+
 }
